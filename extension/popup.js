@@ -2,6 +2,7 @@
 const changeColor = document.getElementById('changeColor');
 
 chrome.storage.sync.get('color', ({ color }) => {
+  console.log(color);
   changeColor.style.backgroundColor = color;
 });
 
@@ -18,8 +19,8 @@ changeColor.addEventListener('click', async () => {
 // The body of this function will be executed as a content script inside the
 // current page
 function setPageBackgroundColor() {
-  chrome.storage.sync.get('color', ({ color }) => {
-    document.body.style.backgroundColor = color;
+  chrome.storage.sync.get('password', ({ password }) => {
+    console.log(password);
   });
 }
 
@@ -29,4 +30,11 @@ checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
     checkList.classList.remove('visible');
   else
     checkList.classList.add('visible');
+}
+
+var changePassword = document.getElementById("changePassword");
+changePassword.onclick = async function (evt) {
+  document.getElementById("password");
+  chrome.storage.sync.set({"password": password.value});
+  alert("Password changed!");
 }
