@@ -1,0 +1,34 @@
+.censor-container {
+    position: relative;
+}
+
+.censor-overlay {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #999999;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+	align-items: center;
+	justify-content: center;  
+}
+
+.censor-overlay span {
+    margin-bottom: 2px;
+}
+
+.censor-overlay span:last-child {
+    margin-bottom: 0;
+}
+
+.censor-title {
+    font-size: 16px;
+    text-decoration: underline;
+}
+
+.censor-description {
+    font-size: 12px;
+}
