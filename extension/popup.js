@@ -80,3 +80,34 @@ blockSlider.onchange = async function (evt) {
     chrome.storage.sync.set({"blocking": true});
   }
 }
+
+var categories = {
+  "adult": true,
+  "violence": true,
+  "racy": true,
+  "medical": false,
+  "spoof": false
+};
+Object.keys(categories).forEach((category) => {
+  console.log(category);
+  var check = document.getElementById(category);
+  chrome.storage.sync.get(category, (obj) => {
+    console.log(category, obj);
+    check.checked = obj[category];
+    categories[category] = obj[category];
+  });
+  check.onchange = async function (evt) {
+    if (!check.checked) {
+      if (inpLock.checked) {
+        alert("Must be unlocked to unblock a category!");
+        check.checked = true;
+      } else {
+        categories[category] = false;
+        chrome.storage.sync.set(categories);
+      }
+    } else {
+      categories[category] = true;
+      chrome.storage.sync.set(categories);
+    }
+  }
+});
