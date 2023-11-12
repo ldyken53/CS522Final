@@ -34,7 +34,49 @@ checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
 
 var changePassword = document.getElementById("changePassword");
 changePassword.onclick = async function (evt) {
-  document.getElementById("password");
-  chrome.storage.sync.set({"password": password.value});
-  alert("Password changed!");
+  if (!inpLock.checked) {
+    var password = document.getElementById("password");
+    chrome.storage.sync.set({"password": password.value});
+    alert("Password changed!");
+    password.value = "";
+  } else {
+    alert("Must be unlocked to change password!");
+  }
+}
+
+var inpLock = document.getElementById("inpLock");
+chrome.storage.sync.get("locked", ({locked}) => {
+  inpLock.checked = locked;
+});
+inpLock.onchange = async function (evt) {
+  if (!inpLock.checked) {
+    var pass = prompt("Enter password:");
+    chrome.storage.sync.get("password", ({ password }) => {
+      if (pass != password) {
+        alert("Password incorrect!");
+        inpLock.checked = true;
+      } else {
+        chrome.storage.sync.set({"locked": false});
+      }
+    });
+  } else {
+    chrome.storage.sync.set({"locked": true});
+  }
+}
+
+var blockSlider = document.getElementById("slider");
+chrome.storage.sync.get("blocking", ({blocking}) => {
+  blockSlider.checked = blocking;
+});
+blockSlider.onchange = async function (evt) {
+  if (!blockSlider.checked) {
+    if (inpLock.checked) {
+      alert("Must be unlocked to turn off content blocking!");
+      blockSlider.checked = true;
+    } else {
+      chrome.storage.sync.set({"blocking": false});
+    }
+  } else {
+    chrome.storage.sync.set({"blocking": true});
+  }
 }
