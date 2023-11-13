@@ -1,29 +1,3 @@
-// Initialize button with users' preferred color
-const changeColor = document.getElementById('changeColor');
-
-chrome.storage.sync.get('color', ({ color }) => {
-  console.log(color);
-  changeColor.style.backgroundColor = color;
-});
-
-// When the button is clicked, inject setPageBackgroundColor into current page
-changeColor.addEventListener('click', async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    func: setPageBackgroundColor
-  });
-});
-
-// The body of this function will be executed as a content script inside the
-// current page
-function setPageBackgroundColor() {
-  chrome.storage.sync.get('password', ({ password }) => {
-    console.log(password);
-  });
-}
-
 var checkList = document.getElementById('list1');
 checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
   if (checkList.classList.contains('visible'))
@@ -41,6 +15,31 @@ changePassword.onclick = async function (evt) {
     password.value = "";
   } else {
     alert("Must be unlocked to change password!");
+  }
+}
+
+var clearHistory = document.getElementById("clearHistory");
+clearHistory.onclick = async function (evt) {
+  if (!inpLock.checked) {
+    chrome.storage.local.clear();
+    alert("History cleared!");
+  } else {
+    alert("Must be unlocked to clear history!");
+  }
+}
+
+var viewHistory = document.getElementById("viewHistory");
+viewHistory.onclick = async function (evt) {
+  if (!inpLock.checked) {
+    chrome.storage.local.get(null, function(all) {
+        var newWindow = window.open("","Test","width=2000,height=1000,scrollbars=1,resizable=1");
+        var html = "<html><head></head><body><b>" + JSON.stringify(all) + "</b> </body></html>";
+        newWindow .document.open()
+        newWindow .document.write(html)
+        newWindow .document.close()
+    });
+  } else {
+    alert("Must be unlocked to view history!");
   }
 }
 
@@ -83,7 +82,6 @@ blockSlider.onchange = async function (evt) {
       });
     }
   } else {
-    console.log("test");
     chrome.storage.sync.set({"blocking": true});
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -93,8 +91,6 @@ blockSlider.onchange = async function (evt) {
     });
   }
 }
-
-chrome.storage.local.get(null, function(all) {console.log(all)});
 
 function blurContent() {
   const violenceWords = ["gun", "soldier", "shooter", "kill", "tank", "troop", "bodies"];
@@ -118,7 +114,7 @@ function blurContent() {
     $(element).before(blockText);
     $(`#agree${id}`).click(function() {
       chrome.storage.local.get(id, (obj) => {
-        console.log(obj[id]);
+        alert("Agreement recorded!");
         var newLog = obj;
         newLog[id]["feedback"] = "agree";
         chrome.storage.local.set(newLog);
@@ -126,7 +122,7 @@ function blurContent() {
     });
     $(`#disagree${id}`).click(function() {
       chrome.storage.local.get(id, (obj) => {
-        console.log(obj[id]);
+        alert("Disagreement recorded!");
         var newLog = obj;
         newLog[id]["feedback"] = "disagree";
         chrome.storage.local.set(newLog);
@@ -148,7 +144,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(0deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for violent content</h3>');
+        var blockText = $('<h3 class="block-text">This image has been blocked for violent content</h3>');
         addBlockText(this, blockText, id);
       } else if (adultWords.some((word) => this.alt.toLowerCase().includes(word))) {
         var jsonLog = {
@@ -163,7 +159,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(190deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for adult content</h3>');
+        var blockText = $('<h3 class="block-text">This image has been blocked for adult content</h3>');
         addBlockText(this, blockText, id);
       } else if (medicalWords.some((word) => this.alt.toLowerCase().includes(word))) {
         var jsonLog = {
@@ -178,7 +174,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(90deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for medical content</h3>');
+        var blockText = $('<h3 class="block-text">This image has been blocked for medical content</h3>');
         addBlockText(this, blockText, id);
       } else if (racyWords.some((word) => this.alt.toLowerCase().includes(word))) {
         var jsonLog = {
@@ -193,7 +189,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(270deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for racy content</h3>');
+        var blockText = $('<h3 class="block-text">This image has been blocked for racy content</h3>');
         addBlockText(this, blockText, id);
       } else if (spoofWords.some((word) => this.alt.toLowerCase().includes(word))) {
         var jsonLog = {
@@ -208,7 +204,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(60deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for spoof content</h3>');
+        var blockText = $('<h3 class="block-text">This image has been blocked for spoof content</h3>');
         addBlockText(this, blockText, id);
       }
     }
@@ -228,7 +224,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(0deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for violent content</h3>');
+        var blockText = $('<h3 class="block-text">This text has been blocked for violent content</h3>');
         addBlockText(this, blockText, id);
       } else if (adultWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
         var jsonLog = {
@@ -243,7 +239,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(190deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for adult content</h3>');
+        var blockText = $('<h3 class="block-text">This text has been blocked for adult content</h3>');
         addBlockText(this, blockText, id);
       } else if (medicalWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
         var jsonLog = {
@@ -258,7 +254,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(90deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for medical content</h3>');
+        var blockText = $('<h3 class="block-text">This text has been blocked for medical content</h3>');
         addBlockText(this, blockText, id);
       } else if (racyWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
         var jsonLog = {
@@ -273,7 +269,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(270deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for racy content</h3>');
+        var blockText = $('<h3 class="block-text">This text has been blocked for racy content</h3>');
         addBlockText(this, blockText, id);
       } else if (spoofWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
         var jsonLog = {
@@ -288,7 +284,7 @@ function blurContent() {
         event[id] = jsonLog;
         chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(60deg) saturate(900%)');
-        var blockText = $('<h3 class="block-text">This content has been blocked for spoof content</h3>');
+        var blockText = $('<h3 class="block-text">This text has been blocked for spoof content</h3>');
         addBlockText(this, blockText, id);
       }
     }
@@ -316,10 +312,8 @@ var categories = {
   "spoof": false
 };
 Object.keys(categories).forEach((category) => {
-  console.log(category);
   var check = document.getElementById(category);
   chrome.storage.sync.get(category, (obj) => {
-    console.log(category, obj);
     check.checked = obj[category];
     categories[category] = obj[category];
   });
