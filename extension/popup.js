@@ -79,7 +79,7 @@ blockSlider.onchange = async function (evt) {
 
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: unblurImages
+        func: unblurContent
       });
     }
   } else {
@@ -89,62 +89,101 @@ blockSlider.onchange = async function (evt) {
 
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      func: blurImages
+      func: blurContent
     });
   }
 }
 
+var examplejson = {
+  "type": "video",
+  "content": "adult",
+  "time": "2023-11-10T20:11:20.855Z",
+  "feedback": "disagree",
+  "url": "https://www.youtube.com/NIJMKO"
+};
 
-function blurImages() {
-  const violenceWords = ["gun", "soldier", "shooter", "kill", "tank", "troop"];
-  const adultWords = ["sex"];
-  $('img').click(false);
+function blurContent() {
+  const violenceWords = ["gun", "soldier", "shooter", "kill", "tank", "troop", "bodies"];
+  const adultWords = ["sex", "naked", "breast"];
+  const medicalWords = ["blood", "ray", "mri", "doctor", "needle", "nurse", "hospital"];
+  const racyWords = ["bikini", "lingerie", "underwear", "leggings"];
+  const spoofWords = ["meme"];
+  function addBlockText(element, blockText) {
+    var parentPosition = $(element).parent().css('position');
+    if (parentPosition !== 'relative' && parentPosition !== 'absolute' && parentPosition !== 'fixed') {
+        $(element).parent().css('position', 'relative');
+    }
+    $(element).before(blockText);
+    var agreeButton = $('<button class="agree-button">Agree</button>');
+    var disagreeButton = $('<button class="disagree-button">Disagree</button>');
+    agreeButton.css({"background-color": "green", "color": "white", "border-radius": "2px","margin-left": "2px", "height": "30px", "width": "100px"});
+    disagreeButton.css({"background-color": "red", "color": "white", "border-radius": "2px", "margin-left": "2px", "height": "30px", "width": "100px"});
+    
+    // Append buttons to the parent container
+    $(element).before(agreeButton);
+    $(element).before(disagreeButton);
+  }
   $('img').each(function() {
     if (this.alt) {
-      if (violenceWords.some((word) => this.alt.includes(word))) {
+      if (violenceWords.some((word) => this.alt.toLowerCase().includes(word))) {
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(0deg) saturate(900%)');
-        var blockText = $('<div class="block-text">This content has been blocked</div>');
-        var parentPosition = $(this).parent().css('position');
-        if (parentPosition !== 'relative' && parentPosition !== 'absolute' && parentPosition !== 'fixed') {
-            $(this).parent().css('position', 'relative');
-        }
-        $(this).before(blockText);
-        var agreeButton = $('<button class="agree-button">Agree</button>');
-        var disagreeButton = $('<button class="disagree-button">Disagree</button>');
-        agreeButton.css({"background-color": "green", "color": "white"});
-        disagreeButton.css({"background-color": "red", "color": "white"});
-        
-        // Append buttons to the parent container
-        $(this).before(agreeButton);
-        $(this).before(disagreeButton);
-      } else if (adultWords.some((word) => this.alt.includes(word))) {
+        var blockText = $('<h3 class="block-text">This content has been blocked for violent content</h3>');
+        addBlockText(this, blockText);
+      } else if (adultWords.some((word) => this.alt.toLowerCase().includes(word))) {
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(190deg) saturate(900%)');
-        var blockText = $('<div class="block-text">This content has been blocked</div>');
-        var parentPosition = $(this).parent().css('position');
-        if (parentPosition !== 'relative' && parentPosition !== 'absolute' && parentPosition !== 'fixed') {
-            $(this).parent().css('position', 'relative');
-        }
-        $(this).before(blockText);
-        var agreeButton = $('<button class="agree-button">Agree</button>');
-        var disagreeButton = $('<button class="disagree-button">Disagree</button>');
-        agreeButton.css({"background-color": "green", "color": "white"});
-        disagreeButton.css({"background-color": "red", "color": "white"});
-        
-        // Append buttons to the parent container
-        $(this).before(agreeButton);
-        $(this).before(disagreeButton);
+        var blockText = $('<h3 class="block-text">This content has been blocked for adult content</h3>');
+        addBlockText(this, blockText);
+      } else if (medicalWords.some((word) => this.alt.toLowerCase().includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(90deg) saturate(900%)');
+        var blockText = $('<h3 class="block-text">This content has been blocked for medical content</h3>');
+        addBlockText(this, blockText);
+      } else if (racyWords.some((word) => this.alt.toLowerCase().includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(270deg) saturate(900%)');
+        var blockText = $('<h3 class="block-text">This content has been blocked for racy content</h3>');
+        addBlockText(this, blockText);
+      } else if (spoofWords.some((word) => this.alt.toLowerCase().includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(60deg) saturate(900%)');
+        var blockText = $('<h3 class="block-text">This content has been blocked for spoof content</h3>');
+        addBlockText(this, blockText);
       }
     }
   });
-
+  $('p').each(function() {
+    if (this.innerHTML) {
+      if (violenceWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(0deg) saturate(900%)');
+        var blockText = $('<h3 class="block-text">This content has been blocked for violent content</h3>');
+        addBlockText(this, blockText);
+      } else if (adultWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(190deg) saturate(900%)');
+        var blockText = $('<h3 class="block-text">This content has been blocked for adult content</h3>');
+        addBlockText(this, blockText);
+      } else if (medicalWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(90deg) saturate(900%)');
+        var blockText = $('<h3 class="block-text">This content has been blocked for medical content</h3>');
+        addBlockText(this, blockText);
+      } else if (racyWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(270deg) saturate(900%)');
+        var blockText = $('<h3 class="block-text">This content has been blocked for racy content</h3>');
+        addBlockText(this, blockText);
+      } else if (spoofWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(60deg) saturate(900%)');
+        var blockText = $('<h3 class="block-text">This content has been blocked for spoof content</h3>');
+        addBlockText(this, blockText);
+      }
+    }
+  });
   
 }
 
-var unblurImages=function(){
+var unblurContent=function(){
   $('.block-text').remove();
   $('.agree-button').remove();
   $('.disagree-button').remove();
   $('img').each(function() {
+    $(this).css('filter', 'none');
+  });
+  $('p').each(function() {
     $(this).css('filter', 'none');
   });
 }
