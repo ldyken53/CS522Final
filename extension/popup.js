@@ -75,10 +75,78 @@ blockSlider.onchange = async function (evt) {
       blockSlider.checked = true;
     } else {
       chrome.storage.sync.set({"blocking": false});
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: unblurImages
+      });
     }
   } else {
+    console.log("test");
     chrome.storage.sync.set({"blocking": true});
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: blurImages
+    });
   }
+}
+
+
+function blurImages() {
+  const violenceWords = ["gun", "soldier", "shooter", "kill", "tank", "troop"];
+  const adultWords = ["sex"];
+  $('img').click(false);
+  $('img').each(function() {
+    if (this.alt) {
+      if (violenceWords.some((word) => this.alt.includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(0deg) saturate(900%)');
+        var blockText = $('<div class="block-text">This content has been blocked</div>');
+        var parentPosition = $(this).parent().css('position');
+        if (parentPosition !== 'relative' && parentPosition !== 'absolute' && parentPosition !== 'fixed') {
+            $(this).parent().css('position', 'relative');
+        }
+        $(this).before(blockText);
+        var agreeButton = $('<button class="agree-button">Agree</button>');
+        var disagreeButton = $('<button class="disagree-button">Disagree</button>');
+        agreeButton.css({"background-color": "green", "color": "white"});
+        disagreeButton.css({"background-color": "red", "color": "white"});
+        
+        // Append buttons to the parent container
+        $(this).before(agreeButton);
+        $(this).before(disagreeButton);
+      } else if (adultWords.some((word) => this.alt.includes(word))) {
+        $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(190deg) saturate(900%)');
+        var blockText = $('<div class="block-text">This content has been blocked</div>');
+        var parentPosition = $(this).parent().css('position');
+        if (parentPosition !== 'relative' && parentPosition !== 'absolute' && parentPosition !== 'fixed') {
+            $(this).parent().css('position', 'relative');
+        }
+        $(this).before(blockText);
+        var agreeButton = $('<button class="agree-button">Agree</button>');
+        var disagreeButton = $('<button class="disagree-button">Disagree</button>');
+        agreeButton.css({"background-color": "green", "color": "white"});
+        disagreeButton.css({"background-color": "red", "color": "white"});
+        
+        // Append buttons to the parent container
+        $(this).before(agreeButton);
+        $(this).before(disagreeButton);
+      }
+    }
+  });
+
+  
+}
+
+var unblurImages=function(){
+  $('.block-text').remove();
+  $('.agree-button').remove();
+  $('.disagree-button').remove();
+  $('img').each(function() {
+    $(this).css('filter', 'none');
+  });
 }
 
 var categories = {
