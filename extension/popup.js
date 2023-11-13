@@ -94,13 +94,7 @@ blockSlider.onchange = async function (evt) {
   }
 }
 
-var examplejson = {
-  "type": "video",
-  "content": "adult",
-  "time": "2023-11-10T20:11:20.855Z",
-  "feedback": "disagree",
-  "url": "https://www.youtube.com/NIJMKO"
-};
+chrome.storage.local.get(null, function(all) {console.log(all)});
 
 function blurContent() {
   const violenceWords = ["gun", "soldier", "shooter", "kill", "tank", "troop", "bodies"];
@@ -108,68 +102,194 @@ function blurContent() {
   const medicalWords = ["blood", "ray", "mri", "doctor", "needle", "nurse", "hospital"];
   const racyWords = ["bikini", "lingerie", "underwear", "leggings"];
   const spoofWords = ["meme"];
-  function addBlockText(element, blockText) {
+  function addBlockText(element, blockText, id) {
     var parentPosition = $(element).parent().css('position');
     if (parentPosition !== 'relative' && parentPosition !== 'absolute' && parentPosition !== 'fixed') {
         $(element).parent().css('position', 'relative');
     }
-    $(element).before(blockText);
-    var agreeButton = $('<button class="agree-button">Agree</button>');
-    var disagreeButton = $('<button class="disagree-button">Disagree</button>');
+    var agreeButton = $(`<button id=agree${id} class="agree-button">Agree</button>`);
+    var disagreeButton = $(`<button id=disagree${id} class="disagree-button">Disagree</button>`);
     agreeButton.css({"background-color": "green", "color": "white", "border-radius": "2px","margin-left": "2px", "height": "30px", "width": "100px"});
     disagreeButton.css({"background-color": "red", "color": "white", "border-radius": "2px", "margin-left": "2px", "height": "30px", "width": "100px"});
     
     // Append buttons to the parent container
     $(element).before(agreeButton);
     $(element).before(disagreeButton);
+    $(element).before(blockText);
+    $(`#agree${id}`).click(function() {
+      chrome.storage.local.get(id, (obj) => {
+        console.log(obj[id]);
+        var newLog = obj;
+        newLog[id]["feedback"] = "agree";
+        chrome.storage.local.set(newLog);
+      });
+    });
+    $(`#disagree${id}`).click(function() {
+      chrome.storage.local.get(id, (obj) => {
+        console.log(obj[id]);
+        var newLog = obj;
+        newLog[id]["feedback"] = "disagree";
+        chrome.storage.local.set(newLog);
+      });
+    });
   }
   $('img').each(function() {
     if (this.alt) {
       if (violenceWords.some((word) => this.alt.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "image",
+          "content": "violence",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(0deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for violent content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       } else if (adultWords.some((word) => this.alt.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "image",
+          "content": "adult",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(190deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for adult content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       } else if (medicalWords.some((word) => this.alt.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "image",
+          "content": "medical",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(90deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for medical content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       } else if (racyWords.some((word) => this.alt.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "image",
+          "content": "racy",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(270deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for racy content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       } else if (spoofWords.some((word) => this.alt.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "image",
+          "content": "spoof",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(60deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for spoof content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       }
     }
   });
   $('p').each(function() {
     if (this.innerHTML) {
       if (violenceWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "text",
+          "content": "violence",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(0deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for violent content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       } else if (adultWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "text",
+          "content": "adult",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(190deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for adult content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       } else if (medicalWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "text",
+          "content": "medical",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(90deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for medical content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       } else if (racyWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "text",
+          "content": "racy",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(270deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for racy content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       } else if (spoofWords.some((word) => this.innerHTML.toLowerCase().includes(word))) {
+        var jsonLog = {
+          "type": "text",
+          "content": "spoof",
+          "time": new Date().toISOString(),
+          "feedback": "none",
+          "url": window.location.href
+        };
+        var id = Date.now().toString();
+        var event = {};
+        event[id] = jsonLog;
+        chrome.storage.local.set(event);
         $(this).css('filter', 'blur(20px) sepia(100%) hue-rotate(60deg) saturate(900%)');
         var blockText = $('<h3 class="block-text">This content has been blocked for spoof content</h3>');
-        addBlockText(this, blockText);
+        addBlockText(this, blockText, id);
       }
     }
   });
