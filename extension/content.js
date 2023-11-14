@@ -225,12 +225,7 @@ async function blurContent() {
 
 window.onload = function () {
     chrome.storage.sync.get("blocking", ({blocking}) => {
-    //   blockSlider.checked = blocking;
-    // });
-    // chrome.storage.sync.get('blocking', function (data) {
-      alert('test', String(blocking));
-      console.log('gere')
-      console.log(blocking);
+    //   console.log(blocking);
       if (blocking) {
         blurContent()
       } else {
