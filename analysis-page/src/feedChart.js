@@ -85,7 +85,15 @@ export default function PlotBarChart(props){
                     .y(function(d) { return y(+d.count); })
                     (d[1])
                 })
-                .attr("transform", "translate(" + padding + ',' + 0.5*padding + ")");
+                .attr("transform", "translate(" + padding + ',' + padding + ")")
+                .on('mouseover',(e,d)=>{
+                    let text = 'Feedback: ' + d[0] + '</br>';
+                    tTip.html(text);
+                }).on('mousemove',(e)=>{
+                    props.ToolTip.moveTTipEvent(tTip,e);
+                }).on('mouseout',(e,d)=>{
+                    props.ToolTip.hideTTip(tTip);
+                });;
 
 
         var legend = svg.append('g')

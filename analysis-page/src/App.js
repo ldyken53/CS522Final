@@ -31,7 +31,7 @@ function App() {
           <>
             <div style={{'width':'100%','height':'100%','display':'inline-block'}}>
               <div 
-                style={{'height': '100%','width':'calc(100% - 2em)','display':'inline-block', 'background': 'grey'}}
+                style={{'height': '100%','width':'calc(100% - 2em)','display':'inline-block'}}
               >
                   <PlotPieChart
                     data={data}
@@ -49,7 +49,7 @@ function App() {
           <>
             <div style={{'width':'100%','height':'100%','display':'inline-block'}}>
               <div 
-                style={{'height': '100%','width':'calc(100% - 2em)','display':'inline-block', 'background': 'pink'}}
+                style={{'height': '100%','width':'calc(100% - 2em)','display':'inline-block'}}
               >
                 <PlotLineChart
                   data={data}
@@ -68,7 +68,7 @@ function App() {
           <>
             <div style={{'width':'100%','height':'100%','display':'inline-block'}}>
               <div 
-                style={{'height': '100%','width':'calc(100% - 2em)','display':'inline-block', 'background': 'green'}}
+                style={{'height': '100%','width':'calc(100% - 2em)','display':'inline-block'}}
               >
                 <PlotFeedChart
                   data={data}
@@ -87,7 +87,7 @@ function App() {
           <>
             <div style={{'width':'100%','height':'100%','display':'inline-block'}}>
               <div 
-                style={{'height': '100%','width':'calc(100% - 2em)','display':'inline-block', 'background': 'blue'}}
+                style={{'height': '100%','width':'calc(100% - 2em)','display':'inline-block'}}
               >
                 <PlotBarChart
                   data={data}
@@ -107,7 +107,7 @@ function App() {
         <h1>{'Analysis View'}</h1>
       </div>
       <div 
-        style={{'height': '43vw','width':'100vw','background': '#eee'}}
+        style={{'height': '43vw','width':'100vw'}}
       >
         <div className={'body'} 
           style={{'height':'50%','width':'calc(50% - 2em)', 'display':'inline-block'}}

@@ -102,7 +102,17 @@ export default function PlotBarChart(props){
               .attr("width", xSubgroup.bandwidth())
               .attr("height", d => height - padding*2.5 - y(d.value))
               .attr("fill", d => color(d.key))
-              .attr("transform", "translate(" + padding + ',' + padding + ")");
+              .attr("transform", "translate(" + padding + ',' + padding + ")")
+              .on('mouseover',(e,d)=>{
+                    let text = 'Feedback: ' + d.key + '</br>'
+                        + '</br>'
+                        + 'Count: ' + d.value + '</br>';
+                    tTip.html(text);
+                }).on('mousemove',(e)=>{
+                    props.ToolTip.moveTTipEvent(tTip,e);
+                }).on('mouseout',(e,d)=>{
+                    props.ToolTip.hideTTip(tTip);
+                });;
 
 
         var legend = svg.append('g')

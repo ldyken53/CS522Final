@@ -57,7 +57,20 @@ export default function PlotPieChart(props){
 
         arc.append("path")
            .attr("d", path)
-           .attr("fill", function(d) { return ordScale(d.data.category); });
+           .attr("fill", function(d) { return ordScale(d.data.category); })
+           .attr('stroke','black')
+           .attr('stroke-width',0.2)
+           .on('mouseover',(e,d)=>{
+                let text = 'Category: ' + d.category + '</br>'
+                    + '</br>'
+                    + 'Count: ' + d.count + '</br>'
+                    + 'Persent: ' + (d.data.count/tCount * 100).toFixed(0) + '%' + '</br>';
+                tTip.html(text);
+            }).on('mousemove',(e)=>{
+                props.ToolTip.moveTTipEvent(tTip,e);
+            }).on('mouseout',(e,d)=>{
+                props.ToolTip.hideTTip(tTip);
+            });
 
         var label = d3.arc()
                       .outerRadius(radius)
@@ -69,7 +82,6 @@ export default function PlotPieChart(props){
             
         arc.append("text")
            .attr("transform", function(d) { 
-                // console.log(d);
                 var rotation = (d.startAngle/2 + d.endAngle/2) * 180/Math.PI;
                 return "translate(" + (label2.centroid(d)) + ") rotate(" + rotation + ")"; 
             })

@@ -85,7 +85,15 @@ export default function PlotLineChart(props){
                     .y(function(d) { return y(+d.count); })
                     (d[1])
                 })
-                .attr("transform", "translate(" + padding + ',' + 0.5*padding + ")");
+                .on('mouseover',(e,d)=>{
+                    let text = 'Category: ' + d[0] + '</br>';
+                    tTip.html(text);
+                }).on('mousemove',(e)=>{
+                    props.ToolTip.moveTTipEvent(tTip,e);
+                }).on('mouseout',(e,d)=>{
+                    props.ToolTip.hideTTip(tTip);
+                })
+                .attr("transform", "translate(" + padding + ',' + padding + ")");;
 
 
         var legend = svg.append('g')
