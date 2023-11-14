@@ -51,6 +51,19 @@ viewHistory.onclick = async function (evt) {
   }
 }
 
+var viewHistory = document.getElementById("toAnalysis");
+viewHistory.onclick = async function (evt) {
+  if (!inpLock.checked) {
+    // alert("New window is opening");
+    // window.location.href="https://www.youtube.com/";
+    window.open("http://localhost:3000/", "_blank");
+  }
+  else {
+    alert("Must be unlocked to view history!");
+  }
+}
+
+
 var inpLock = document.getElementById("inpLock");
 chrome.storage.sync.get("locked", ({locked}) => {
   inpLock.checked = locked;
