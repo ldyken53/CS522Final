@@ -1,5 +1,5 @@
 button {
-  height: 30px;
+  height: 40px;
   width: 100px;
   outline: none;
   border: none;
@@ -9,6 +9,15 @@ button {
   cursor: pointer;
   vertical-align: middle;
   margin-left: 10px;
+}
+
+.neutral {
+  background-color: #555;
+}
+
+.danger {
+  color: white;
+  background-color: #ff5b5b;
 }
 
 .disagree-button {
@@ -41,6 +50,28 @@ img {
 
 .menu {
   width: 500px;
+  /* max-width: fit-content; */
+  /* display: flex; */
+  /* flex-wrap: wrap; */
+  /* flex-direction: column; */
+}
+
+.flex-rows {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-rows.last {
+  margin-top: 3%;
+  margin-bottom: 4%;
+  justify-content: center;
+}
+
+.flex-rows.center-align {
+  justify-content: center;
 }
 
 h1, h3{
@@ -51,6 +82,13 @@ h1, h3{
 
 .analysis {
   width: 25%;
+  margin-top: 2%;
+  margin-right: 24px;
+  padding: 4px;
+}
+
+.analysis:last-of-type {
+  margin-right: 0;
 }
 
 /* The switch - the box around the slider */
@@ -122,6 +160,7 @@ input:checked + .slider:before {
   float: right;
   margin: 10px;
   width: 25%;
+  margin-left: 40%;
 }
 
 .line {
@@ -313,4 +352,8 @@ input:checked + .slider:before {
 
 .block-text {
   z-index: 3;
+}
+
+#password {
+  margin-left: 15%;
 }
