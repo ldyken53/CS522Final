@@ -51,10 +51,13 @@ viewHistory.onclick = async function (evt) {
   }
 }
 
-var viewHistory = document.getElementById("toAnalysis");
-viewHistory.onclick = async function (evt) {
+var toAnalysis = document.getElementById("toAnalysis");
+toAnalysis.onclick = async function (evt) {
   if (!inpLock.checked) {
-    window.open("http://localhost:3000/", "_blank");
+    chrome.storage.local.get(null, function(all) {
+      const analysisUrl = "http://localhost:3000/?data=" + LZString.compressToEncodedURIComponent(JSON.stringify([all])) 
+      window.open(analysisUrl, "_blank");
+    });
   }
   else {
     alert("Must be unlocked to view history!");
