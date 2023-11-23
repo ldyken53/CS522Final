@@ -1,4 +1,6 @@
 import React, {useState,useEffect, useMemo} from 'react';
+import LZString from 'lz-string'
+import moment from 'moment'
 import './App.css';
 import PlotPieChart from './pieChart';
 import PlotLineChart from './lineChart';
@@ -7,15 +9,48 @@ import PlotFeedChart from './feedChart';
 import * as d3 from 'd3';
 
 
+// const fs = require('fs');
+
+// function App() {
+
+//   const [data, setData] = useState();
+
+//   // fetch csv data 
+//   const fetchCSV = async function (){
+//     await fs.writeFileSync('history-data.json', LZString.decompressFromEncodedURIComponent(window.location.search.substring(1).split('=')[1]));
+//     d3.json("history-data.json").then(d=>{
+//       console.log(d);
+//       setData(d);    
+//     });
+//   }
+
 function App() {
 
   const [data, setData] = useState();
 
   // fetch csv data 
-  function fetchCSV(){
-    d3.csv("browsing_history_enhanced.csv").then(d=>{
-      setData(d);
+  async function fetchCSV(){
+    // d3.json("browsing_history_enhanced.csv").then(d=>{
+    // })
+    let d = LZString.decompressFromEncodedURIComponent(window.location.search.substring(1).split('=')[1])
+    d = JSON.parse(d)[0]
+    const dataList = Object.keys(d).map(k => {
+      const dateData = moment(d[k]['time'])
+      return {
+        user_id: k,
+        ...d[k],
+        date: dateData.format('YYYY-MM-DD'),
+        time: dateData.format('hh:mm:ss'),
+        URL: d[k]['url'],
+        category: d[k]['content'],
+        content_type: d[k]['type'],
+        child_feedback: d[k]['feedback'],
+      }
     })
+    // console.log(dataList)
+    // console.log(typeof dataList)
+    // console.log(JSON.parse(d)[0])
+    setData(dataList);
   }
 
   // fetch data, called only once
