@@ -12,7 +12,7 @@ export default function PlotPieChart(props){
     const chartSelection = useMemo(()=>{
         if(svg === undefined | props.data === undefined){ return }
 
-        var categories = ['Adult', 'Violence', 'Hate_Speech', 'Discrimination', 'Online_Predators'];
+        let categories = [... new Set(props.data.map(x=>x.category))];
 
         var cag_counts = new Array(categories.length).fill(0);
         for(let d of props.data){

@@ -47,8 +47,8 @@ function App() {
         child_feedback: d[k]['feedback'],
       }
     })
-    console.log(dataList)
-    console.log(typeof dataList)
+    // console.log(dataList)
+    // console.log(typeof dataList)
     // console.log(JSON.parse(d)[0])
     setData(dataList);
   }

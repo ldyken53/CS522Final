@@ -12,7 +12,7 @@ export default function PlotLineChart(props){
     const chartSelection = useMemo(()=>{
         if(svg === undefined | props.data === undefined){ return }
 
-        var categories = ['Adult', 'Violence', 'Hate_Speech', 'Discrimination', 'Online_Predators'];
+        let categories = [... new Set(props.data.map(x=>x.category))];
 
         const dates =  props.data.map(d => d.date);
         const padding = 40;
@@ -44,8 +44,6 @@ export default function PlotLineChart(props){
 
         const sumstat = d3.group(data, d => d.category); 
 
-        // console.log(sumstat);
-
         const dateLen = Object.keys(counts).length;
 
         var x = d3.scaleBand()
@@ -65,7 +63,7 @@ export default function PlotLineChart(props){
                   .range([ height - padding*2.5, 0 ]);
   
         svg.append("g")
-            .attr("transform", "translate(" + padding + ',' + 1*padding + ")")
+            .attr("transform", "translate(" + padding + ',' + (padding) + ")")
             .call(d3.axisLeft(y));
 
         const color = d3.scaleOrdinal()
@@ -93,7 +91,7 @@ export default function PlotLineChart(props){
                 }).on('mouseout',(e,d)=>{
                     props.ToolTip.hideTTip(tTip);
                 })
-                .attr("transform", "translate(" + padding + ',' + padding + ")");;
+                .attr("transform", "translate(" + (padding + x.bandwidth()/2) + ',' + padding + ")");;
 
 
         var legend = svg.append('g')

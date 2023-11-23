@@ -12,7 +12,11 @@ export default function PlotBarChart(props){
     const chartSelection = useMemo(()=>{
         if(svg === undefined | props.data === undefined){ return }
 
-        const feedbacks = ['Agree', 'Disagree'];
+        let feedbacks = [... new Set(props.data.map(x=>x.child_feedback))];
+        const index = feedbacks.indexOf('none');
+        if (index > -1) { // only splice array when item is found
+            feedbacks.splice(index, 1); // 2nd parameter means remove one item only
+        }
         const padding = 40;
 
         const dates =  props.data.map(d => d.date);
@@ -44,8 +48,6 @@ export default function PlotBarChart(props){
 
         const sumstat = d3.group(data, d => d.feedback); 
 
-        // console.log(sumstat);
-
         const dateLen = Object.keys(counts).length;
 
         var x = d3.scaleBand()
@@ -69,7 +71,7 @@ export default function PlotBarChart(props){
             .call(d3.axisLeft(y));
 
         const color = d3.scaleOrdinal()
-            .range(['#e41a1c','#4daf4a'])
+            .range(['#e41a1c','#377eb8'])
 
 
           // Draw the line
@@ -85,7 +87,7 @@ export default function PlotBarChart(props){
                     .y(function(d) { return y(+d.count); })
                     (d[1])
                 })
-                .attr("transform", "translate(" + padding + ',' + padding + ")")
+                .attr("transform", "translate(" + (padding+x.bandwidth()/2) + ',' + padding + ")")
                 .on('mouseover',(e,d)=>{
                     let text = 'Feedback: ' + d[0] + '</br>';
                     tTip.html(text);
@@ -100,7 +102,7 @@ export default function PlotBarChart(props){
             .attr('class', 'legend')
             .attr('transform', 'translate(' + (width - padding*2) + ", " + padding + ')' );
 
-        var legend_colors = ['#e41a1c','#4daf4a'];
+        var legend_colors = ['#e41a1c','#377eb8'];
         // draw legends
         legend.selectAll('rect')
               .data(feedbacks)

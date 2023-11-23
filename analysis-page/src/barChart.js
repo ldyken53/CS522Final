@@ -12,12 +12,17 @@ export default function PlotBarChart(props){
     const chartSelection = useMemo(()=>{
         if(svg === undefined | props.data === undefined){ return }
 
-        var categories = ['Adult', 'Violence', 'Hate_Speech', 'Discrimination', 'Online_Predators'];
+        let categories = [... new Set(props.data.map(x=>x.category))];
         const padding = 40;
 
+        let subgroups = [... new Set(props.data.map(x=>x.child_feedback))];
+        const index = subgroups.indexOf('none');
+        if (index > -1) { // only splice array when item is found
+            subgroups.splice(index, 1); // 2nd parameter means remove one item only
+        }
         // console.log(props.data);
 
-        const subgroups = ['Agree', 'Disagree'];
+        // const subgroups = ['Agree', 'Disagree'];
 
         const data = [] 
         for (var k in subgroups){
@@ -46,8 +51,8 @@ export default function PlotBarChart(props){
 
             let entry = {
                 'category': categories[c],
-                'Agree': d[0].count,
-                'Disagree': d[1].count,
+                'agree': d[0].count,
+                'disagree': d[1].count,
             }
             fdata.push(entry);
         }
