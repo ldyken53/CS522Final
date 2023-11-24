@@ -67,7 +67,7 @@ export default function PlotLineChart(props){
             .call(d3.axisLeft(y));
 
         const color = d3.scaleOrdinal()
-            .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+            .range(['#377eb8','#e41a1c','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
 
 
           // Draw the line
@@ -98,7 +98,7 @@ export default function PlotLineChart(props){
             .attr('class', 'legend')
             .attr('transform', 'translate(' + (width - padding*2) + ", " + padding + ')' );
 
-        var legend_colors = ['#e41a1c', '#377eb8', '#4daf4a', '#ff7f00'];
+        var legend_colors = ['#377eb8','#e41a1c','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'];
         // draw legends
         legend.selectAll('rect')
               .data(categories)

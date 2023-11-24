@@ -71,7 +71,7 @@ export default function PlotBarChart(props){
             .call(d3.axisLeft(y));
 
         const color = d3.scaleOrdinal()
-            .range(['#e41a1c','#377eb8'])
+            .range(['#377eb8', '#e41a1c'])
 
 
           // Draw the line
@@ -102,7 +102,7 @@ export default function PlotBarChart(props){
             .attr('class', 'legend')
             .attr('transform', 'translate(' + (width - padding*2) + ", " + padding + ')' );
 
-        var legend_colors = ['#e41a1c','#377eb8'];
+        var legend_colors = ['#377eb8', '#e41a1c'];
         // draw legends
         legend.selectAll('rect')
               .data(feedbacks)

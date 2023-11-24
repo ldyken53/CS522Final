@@ -13,6 +13,8 @@ export default function PlotPieChart(props){
         if(svg === undefined | props.data === undefined){ return }
 
         let categories = [... new Set(props.data.map(x=>x.category))];
+        console.log(props.data);
+        console.log(categories);
 
         var cag_counts = new Array(categories.length).fill(0);
         for(let d of props.data){
@@ -27,6 +29,7 @@ export default function PlotPieChart(props){
                 'category': categories[i],
                 'count': cag_counts[i],
             }
+            console.log(entry);
             tCount += cag_counts[i];
             pieData.push(entry);
         }
@@ -61,10 +64,10 @@ export default function PlotPieChart(props){
            .attr('stroke','black')
            .attr('stroke-width',0.2)
            .on('mouseover',(e,d)=>{
-                let text = 'Category: ' + d.category + '</br>'
+                let text = 'Category: ' + d.data.category + '</br>'
                     + '</br>'
-                    + 'Count: ' + d.count + '</br>'
-                    + 'Persent: ' + (d.data.count/tCount * 100).toFixed(0) + '%' + '</br>';
+                    + 'Count: ' + d.data.count + '</br>'
+                    + 'Percent: ' + (d.data.count/tCount * 100).toFixed(0) + '%' + '</br>';
                 tTip.html(text);
             }).on('mousemove',(e)=>{
                 props.ToolTip.moveTTipEvent(tTip,e);

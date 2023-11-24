@@ -87,7 +87,7 @@ export default function PlotBarChart(props){
 
         const color = d3.scaleOrdinal()
             .domain(subgroups)
-            .range(['#e41a1c','#377eb8','#4daf4a'])
+            .range(['#377eb8', '#e41a1c', '#4daf4a'])
 
           // Show the bars
           svg.append("g")
@@ -125,7 +125,7 @@ export default function PlotBarChart(props){
             .attr('transform', 'translate(' + (width - padding*2) + ", " + padding + ')' );
 
 
-        var legend_colors = ['#e41a1c','#377eb8','#4daf4a'];
+        var legend_colors = ['#377eb8', '#e41a1c', '#4daf4a'];
         // draw legends
         legend.selectAll('rect')
               .data(subgroups)

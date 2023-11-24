@@ -124,7 +124,7 @@ async function blurContent() {
     var spoof = all["spoof"];
     const violenceWords = ["gun", "soldier", "shooter", "kill", "tank", "troop", "bodies"];
     const adultWords = ["sex", "naked", "breast"];
-    const medicalWords = ["blood", "ray", "mri", "doctor", "needle", "nurse", "hospital"];
+    const medicalWords = ["blood", "ray", "mri", "doctor", "needle", "nurse", "hospital", "IV"];
     const racyWords = ["bikini", "lingerie", "underwear", "leggings"];
     const spoofWords = ["meme"];
     function addBlockText(element, blockText, id) {

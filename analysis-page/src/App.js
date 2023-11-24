@@ -33,24 +33,29 @@ function App() {
     // d3.json("browsing_history_enhanced.csv").then(d=>{
     // })
     let d = LZString.decompressFromEncodedURIComponent(window.location.search.substring(1).split('=')[1])
-    d = JSON.parse(d)[0]
-    const dataList = Object.keys(d).map(k => {
-      const dateData = moment(d[k]['time'])
-      return {
-        user_id: k,
-        ...d[k],
-        date: dateData.format('YYYY-MM-DD'),
-        time: dateData.format('hh:mm:ss'),
-        URL: d[k]['url'],
-        category: d[k]['content'],
-        content_type: d[k]['type'],
-        child_feedback: d[k]['feedback'],
-      }
-    })
-    // console.log(dataList)
-    // console.log(typeof dataList)
-    // console.log(JSON.parse(d)[0])
-    setData(dataList);
+    if (d) {
+      d = JSON.parse(d)[0]
+      const dataList = Object.keys(d).map(k => {
+        const dateData = moment(d[k]['time'])
+        return {
+          user_id: k,
+          ...d[k],
+          date: dateData.format('YYYY-MM-DD'),
+          time: dateData.format('hh:mm:ss'),
+          URL: d[k]['url'],
+          category: d[k]['content'],
+          content_type: d[k]['type'],
+          child_feedback: d[k]['feedback'],
+        }
+      })
+      // console.log(dataList)
+      // console.log(typeof dataList)
+      // console.log(JSON.parse(d)[0])
+      setData(dataList);
+    } else {
+      alert("No user history to analyze!");
+    }
+
   }
 
   // fetch data, called only once
