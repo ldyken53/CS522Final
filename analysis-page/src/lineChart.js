@@ -11,6 +11,22 @@ export default function PlotLineChart(props){
 
     const chartSelection = useMemo(()=>{
         if(svg === undefined | props.data === undefined){ return }
+        let categoriesTrue = [... new Set(props.data.map(x=>x.category))];
+        categoriesTrue = categoriesTrue.filter(e => e !== 'testing');
+
+        props.data.unshift({
+            URL: "https://www.testcontent.com",
+            category: "testing",
+            child_feedback: "none",
+            content: "testing",
+            content_type: "image",
+            date: "2023-11-1",
+            feedback: "none",
+            time: "00:00:00",
+            type: "text",
+            url: "https://www.testcontent.com",
+            user_id: "000000000000"
+        });
 
         let categories = [... new Set(props.data.map(x=>x.category))];
 
@@ -67,7 +83,7 @@ export default function PlotLineChart(props){
             .call(d3.axisLeft(y));
 
         const color = d3.scaleOrdinal()
-            .range(['#377eb8','#e41a1c','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+            .range(['#999999', '#377eb8','#e41a1c','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
 
 
           // Draw the line
@@ -78,10 +94,15 @@ export default function PlotLineChart(props){
                 .attr("stroke", function(d){ return color(d[0]) })
                 .attr("stroke-width", 1.5)
                 .attr("d", function(d){
-                  return d3.line()
-                    .x(function(d) { return x(d.date); })
-                    .y(function(d) { return y(+d.count); })
-                    (d[1])
+                    console.log(d)
+                    if (d[0] == "testing") {
+                        return
+                    } else {
+                        return d3.line()
+                        .x(function(d) { return x(d.date); })
+                        .y(function(d) { return y(+d.count); })
+                        (d[1])
+                    }
                 })
                 .on('mouseover',(e,d)=>{
                     let text = 'Category: ' + d[0] + '</br>';
@@ -101,7 +122,7 @@ export default function PlotLineChart(props){
         var legend_colors = ['#377eb8','#e41a1c','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'];
         // draw legends
         legend.selectAll('rect')
-              .data(categories)
+              .data(categoriesTrue)
               .enter()
               .append('rect')
               .attr('x', 0)
@@ -113,7 +134,7 @@ export default function PlotLineChart(props){
               });
 
         legend.selectAll('text')
-              .data(categories)
+              .data(categoriesTrue)
               .enter()
               .append('text')
               .text(function(d){ return d; })

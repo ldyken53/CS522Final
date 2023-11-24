@@ -12,6 +12,9 @@ export default function PlotBarChart(props){
     const chartSelection = useMemo(()=>{
         if(svg === undefined | props.data === undefined){ return }
 
+        let categoriesTrue = [... new Set(props.data.map(x=>x.category))];
+        categoriesTrue = categoriesTrue.filter(e => e !== 'testing');
+
         let categories = [... new Set(props.data.map(x=>x.category))];
         const padding = 40;
 
@@ -60,7 +63,7 @@ export default function PlotBarChart(props){
 
         // Add X axis
           const x = d3.scaleBand()
-              .domain(categories)
+              .domain(categoriesTrue)
               .range([0, width-padding*3])
               .padding([0.2])
           svg.append("g")

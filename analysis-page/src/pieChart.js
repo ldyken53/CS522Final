@@ -13,8 +13,6 @@ export default function PlotPieChart(props){
         if(svg === undefined | props.data === undefined){ return }
 
         let categories = [... new Set(props.data.map(x=>x.category))];
-        console.log(props.data);
-        console.log(categories);
 
         var cag_counts = new Array(categories.length).fill(0);
         for(let d of props.data){
@@ -29,7 +27,6 @@ export default function PlotPieChart(props){
                 'category': categories[i],
                 'count': cag_counts[i],
             }
-            console.log(entry);
             tCount += cag_counts[i];
             pieData.push(entry);
         }
