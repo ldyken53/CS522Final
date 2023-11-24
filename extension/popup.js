@@ -55,7 +55,7 @@ var toAnalysis = document.getElementById("toAnalysis");
 toAnalysis.onclick = async function (evt) {
   if (!inpLock.checked) {
     chrome.storage.local.get(null, function(all) {
-      const analysisUrl = "http://localhost:3000/?data=" + LZString.compressToEncodedURIComponent(JSON.stringify([all])) 
+      const analysisUrl = "https://ldyken53.github.io/CS522Final/?data=" + LZString.compressToEncodedURIComponent(JSON.stringify([all])) 
       window.open(analysisUrl, "_blank");
     });
   }
